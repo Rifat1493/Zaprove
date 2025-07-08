@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -24,12 +25,14 @@ public class UserController {
 
     // Hello World endpoint for testing
     @GetMapping("/hello")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello World! UserController is working!");
     }
 
 
     @PostMapping("/create-user")
+    
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
             log.info("Received request to create user: {}", request.getUsername());
