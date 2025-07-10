@@ -1,5 +1,6 @@
 package com.jamiur.core.service;
 
+import com.jamiur.core.audit.AuditService;
 import com.jamiur.core.model.dto.CreateUserRequest;
 import com.jamiur.core.model.dto.UserResponse;
 import com.jamiur.core.model.entity.User;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,6 +21,7 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditService auditService;
     
     @Transactional
     public UserResponse createUser(CreateUserRequest request) {
@@ -44,6 +48,8 @@ public class UserService {
         // Save user
         User savedUser = userRepository.save(user);
         log.info("User created successfully with ID: {}", savedUser.getUserId());
+
+        auditService.sendAuditEvent("USER_CREATED", Map.of("username", savedUser.getUsername(), "role", savedUser.getRole()));
         
         return UserResponse.fromEntity(savedUser);
     }

@@ -3,20 +3,6 @@
 version: '3.8'
 
 services:
-  # backend:
-  #   build: .
-  #   container_name: springboot-app
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb
-  #     - SPRING_DATASOURCE_USERNAME=postgres
-  #     - SPRING_DATASOURCE_PASSWORD=postgres
-  #   depends_on:
-  #     - db
-
-
-
   postgres:
     container_name: postgres
     image: postgres:15.3
@@ -42,5 +28,113 @@ services:
     depends_on:
       - postgres
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.1
+    container_name: logstash
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    depends_on:
+      - elasticsearch
+      - kafka
+
 volumes:
   postgres_data:
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
+  core-service:
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+      - postgres
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+  disbursement-service:
+    build:
+      context: ./disbursement-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka-server
+      - postgres
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-server
+      - kafka
+    environment:
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
