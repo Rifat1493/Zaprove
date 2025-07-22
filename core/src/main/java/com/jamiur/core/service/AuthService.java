@@ -3,8 +3,6 @@ package com.jamiur.core.service;
 import com.jamiur.core.model.dto.LoginRequest;
 import com.jamiur.core.model.entity.User;
 import com.jamiur.core.repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;

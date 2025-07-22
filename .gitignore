@@ -26,4 +26,5 @@ note.txt
 hs_err_pid*
 replay_pid*
 user-role-service/
-
+note.txt
+certificates/

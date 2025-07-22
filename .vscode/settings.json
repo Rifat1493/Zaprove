@@ -1,6 +1,5 @@
 {
+    "java.compile.nullAnalysis.mode": "disabled",
     "java.configuration.updateBuildConfiguration": "automatic",
-    "java.debug.settings.onBuildFailureProceed": true,
-    "java.compile.nullAnalysis.mode": "automatic",
-    "postman.settings.dotenv-detection-notification-visibility": false
+    "java.debug.settings.onBuildFailureProceed": true
 }

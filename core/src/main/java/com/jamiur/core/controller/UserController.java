@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/core")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -25,7 +25,7 @@ public class UserController {
 
     // Hello World endpoint for testing
     @GetMapping("/hello")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello World! UserController is working!");
     }
