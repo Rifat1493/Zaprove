@@ -1,4 +1,4 @@
-package com.jamiur.disbursement.event;
+package com.jamiur.core.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

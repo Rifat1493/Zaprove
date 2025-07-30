@@ -25,24 +25,27 @@ public class DecisionService {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
         Long creditOfficerId = Objects.requireNonNull(application.getAssignedCoId(), "Assigned Credit Officer not found");
+        Long userId = application.getCustomerId();
         saveDecision(applicationId, creditOfficerId, "co_decision", decisionRequest);
-        streamBridge.send("decision-out-0", new DecisionEvent("co_decision", applicationId, decisionRequest.getDecision(),creditOfficerId));
+        streamBridge.send("decision-out-0", new DecisionEvent("co_decision", applicationId, decisionRequest.getDecision(),creditOfficerId,userId));
     }
 
     public void processRiskOfficerDecision(Long applicationId, DecisionRequest decisionRequest) {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
         Long riskOfficerId = Objects.requireNonNull(application.getAssignedRoId(), "Assigned Risk Officer not found");
+        Long userId = application.getCustomerId();
         saveDecision(applicationId, riskOfficerId, "ro_decision", decisionRequest);
-        streamBridge.send("decision-out-0", new DecisionEvent("ro_decision", applicationId, decisionRequest.getDecision(),riskOfficerId));
+        streamBridge.send("decision-out-0", new DecisionEvent("ro_decision", applicationId, decisionRequest.getDecision(),riskOfficerId,userId));
     }
 
     public void processManagerDecision(Long applicationId, DecisionRequest decisionRequest) {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
         Long managerId = Objects.requireNonNull(application.getAssignedManagerId(), "Assigned Manager not found");
+        Long userId = application.getCustomerId();
         saveDecision(applicationId, managerId, "manager_decision", decisionRequest);
-        streamBridge.send("decision-out-0", new DecisionEvent("manager_decision", applicationId, decisionRequest.getDecision(),managerId));
+        streamBridge.send("decision-out-0", new DecisionEvent("manager_decision", applicationId, decisionRequest.getDecision(),managerId,userId));
     }
 
     private void saveDecision(Long applicationId, Long decisionMakerId, String decisionType, DecisionRequest decisionRequest) {

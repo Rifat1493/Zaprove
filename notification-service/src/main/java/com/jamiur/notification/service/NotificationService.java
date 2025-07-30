@@ -86,14 +86,14 @@ public class NotificationService {
                     event.getApplicationId(), event.getDecision());
             Notification customerNotification = Notification.builder()
                     .applicationId(event.getApplicationId())
-                    .userId(2L) //event.getUserId() hardcoded
+                    .userId(event.getUserId())
                     .message(customerMessage)
                     .timestamp(LocalDateTime.now())
                     .isRead(false)
                     .userRole("CUSTOMER")
                     .build();
             notificationRepository.save(customerNotification);
-            log.info(">>> NOTIFYING CUSTOMER about final decision [{}]: {}", 2L, customerMessage); // harcoded userId
+            log.info(">>> NOTIFYING CUSTOMER about final decision [{}]: {}", event.getUserId(), customerMessage);
         }
     }
 }
