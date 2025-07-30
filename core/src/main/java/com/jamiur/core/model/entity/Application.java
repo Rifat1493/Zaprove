@@ -51,6 +51,18 @@ public class Application {
     @Column(name = "application_data")
     private String applicationData;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_co_id")
+    private User assignedCoId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_ro_id")
+    private User assignedRoId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_manager_id")
+    private User assignedManagerId;
+
     public enum ApplicationStatus {
         PENDING,
         UNDER_REVIEW,

@@ -1,34 +1,29 @@
-
 package com.jamiur.notification.controller;
-
-import com.jamiur.notification.event.ApplicationSubmittedEvent;
-import com.jamiur.notification.service.NotificationService;
+import com.jamiur.notification.model.Notification;
+import com.jamiur.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/notification")
+@RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
-    @GetMapping("/notify-customer")
-    public String notifyCustomer() {
-        return "Customer notification endpoint";
+    @GetMapping("/all")
+    public ResponseEntity<List<Notification>> getAllNotifications() {
+        return ResponseEntity.ok(notificationRepository.findAll());
     }
 
-    @GetMapping("/notify-co")
-    public List<ApplicationSubmittedEvent> notifyCo() {
-        return notificationService.getStoredEvents();
-    }
-
-    @GetMapping("/notify-ro")
-    public List<ApplicationSubmittedEvent> notifyRo() {
-        return notificationService.getStoredEvents();
+    @GetMapping("/by-user/{userId}/{userRole}")
+    public ResponseEntity<List<Notification>> getNotificationsByUser(@PathVariable Long userId, @PathVariable String userRole) {
+        return ResponseEntity.ok(notificationRepository.findByUserIdAndUserRole(userId, userRole));
     }
 }

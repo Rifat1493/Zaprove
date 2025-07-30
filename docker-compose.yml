@@ -1,46 +1,34 @@
-
-
 version: '3.8'
 
 services:
-  # backend:
-  #   build: .
-  #   container_name: springboot-app
+  core-service:
+    build: ./core
+    ports:
+      - "8081:8081"
+    networks:
+      - zaprove-network
+
+  disbursement-service:
+    build: ./disbursement-service
+    ports:
+      - "8083:8083"
+    networks:
+      - zaprove-network
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8082:8082"
+    networks:
+      - zaprove-network
+
+  # frontend:
+  #   build: ./frontend
   #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb
-  #     - SPRING_DATASOURCE_USERNAME=postgres
-  #     - SPRING_DATASOURCE_PASSWORD=postgres
-  #   depends_on:
-  #     - db
+  #     - "5173:80"
+  #   networks:
+  #     - zaprove-network
 
-
-
-  postgres:
-    container_name: postgres
-    image: postgres:15.3
-    restart: always
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres
-
-volumes:
-  postgres_data:
+networks:
+  zaprove-network:
+    driver: bridge

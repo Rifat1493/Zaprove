@@ -2,7 +2,7 @@
 
 Zaprove is a robust microservices-based application designed to handle the complexities of loan approval management. It is built with a modern Java stack, featuring a suite of services that work together to provide a scalable and maintainable system. The architecture includes service discovery, centralized configuration, asynchronous messaging, and a full monitoring stack.
 
-**Key Features • Architecture • Technologies • Getting Started • Usage • License**
+**Key Features • Architecture • Technologies • Application Details• Getting Started • Usage • License**
 
 ---
 
@@ -28,9 +28,9 @@ The system is composed of several microservices that communicate with each other
 
 The following diagrams provide a visual overview of the system architecture:
 
-| ERD Diagram                               | Sequence Diagram                               | UML Diagram                               |
-| ----------------------------------------- | ---------------------------------------------- | ----------------------------------------- |
-| ![ERD](./docs/erd_diagram.png) | ![Sequence](./docs/sequence_diagram.png) | ![UML](./docs/uml_diagram.png) |
+| ERD Diagram                               | Sequence Diagram                               | 
+| ----------------------------------------- | ---------------------------------------------- | 
+| ![ERD](./docs/erd_diagram.png) | ![Sequence](./docs/sequence_diagram.png) | 
 
 ### Technologies
 
@@ -44,6 +44,7 @@ This project is built with a range of modern technologies:
 *   **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)
 *   **Containerization**: Docker, Docker Compose
 *   **Build Tool**: Apache Maven
+### Application Details
 
 ### Getting Started
 

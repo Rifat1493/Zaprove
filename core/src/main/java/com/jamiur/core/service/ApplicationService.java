@@ -14,7 +14,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final EventService eventService;
+    private final Random random = new Random();
 
     @Transactional
     public ApplicationResponse createApplication(CreateApplicationRequest request, String username) {
@@ -38,11 +40,13 @@ public class ApplicationService {
         application.setApplicationType(request.getApplicationType());
         application.setAmount(request.getAmount());
         application.setDescription(request.getDescription());
-        application.setApplicationData(request.getApplicationData()); // <-- just set the string
-
+        application.setApplicationData(request.getApplicationData());
         application.setCustomer(customer);
         log.info("Creating application for user: {}", customer.getUserId());
         application.setStatus(Application.ApplicationStatus.PENDING);
+
+        // Assign CO, RO, and Manager
+        assignOfficers(application);
 
         Application savedApplication = applicationRepository.save(application);
 
@@ -50,12 +54,34 @@ public class ApplicationService {
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(
                 savedApplication.getApplicationId(),
                 customer.getUserId(),
-                savedApplication.getApplicationType(),
-                savedApplication.getAmount(),
-                LocalDateTime.now()
+                savedApplication.getAssignedCoId() != null ? savedApplication.getAssignedCoId().getUserId() : null,
+                savedApplication.getAssignedRoId() != null ? savedApplication.getAssignedRoId().getUserId() : null,
+                savedApplication.getApplicationType()
         );
         eventService.sendEvent("application-out-0", event);
 
         return ApplicationResponse.fromEntity(savedApplication);
+    }
+
+    private void assignOfficers(Application application) {
+        List<User> cos = userRepository.findAllByRole(User.Role.CO);
+        List<User> ros = userRepository.findAllByRole(User.Role.RO);
+        List<User> managers = userRepository.findAllByRole(User.Role.MANAGER);
+
+        if (!cos.isEmpty()) {
+            application.setAssignedCoId(cos.get(random.nextInt(cos.size())));
+        }
+        if (!ros.isEmpty()) {
+            application.setAssignedRoId(ros.get(random.nextInt(ros.size())));
+        }
+        if (!managers.isEmpty()) {
+            application.setAssignedManagerId(managers.get(random.nextInt(managers.size())));
+        }
+    }
+
+    public ApplicationResponse getApplicationById(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+        return ApplicationResponse.fromEntity(application);
     }
 }

@@ -1,46 +1,32 @@
 sequenceDiagram
     participant Admin
+    participant Core
     participant Customer
+    participant Notification
+    participant Disbursement
     participant CO as Credit Officer
     participant RO as Risk Officer
     participant Manager
-    participant CS as Core Service
-    participant NS as Notification Service
-    participant DS as Disbursement Service
 
-    Admin->>CS: create-user(customer)
-    CS->>Admin: User created successfully
-    
-    Customer->>CS: login(credentials)
-    CS->>Customer: Authentication token
-    
-    Customer->>CS: submit-application(data)
-    CS->>NS: Application submitted successfully
-    
-    Note over NS: Three parallel notifications triggered
-    NS->>Customer: notify_customer(application received)
-    NS->>CO: notify_co(new application for review)
-    NS->>RO: notify_ro(new application for review)
-    
-    par Credit Officer Review
-        CO->>CS: evaluate_application()
-        CO->>CS: submit_verdict_with_notes(verdict, notes)
-    and Risk Officer Review
-        RO->>CS: evaluate_application()
-        RO->>CS: submit_verdict_with_notes(verdict, notes)
-    end
-    
-    CS->>Manager: send_combined_review(co_verdict, co_notes, ro_verdict, ro_notes)
-    
-    Note over Manager: Reviews both CO and RO verdicts and notes
-    Manager->>CS: final_decision(approve/reject, final_notes)
-    
-    alt Manager Approves
-        CS->>NS: notify_final_approval()
-        NS->>Customer: notify_customer(application approved - processing disbursement)
-        NS->>DS: process_disbursement()
-        DS->>Customer: Disbursement processed
-    else Manager Rejects
-        CS->>NS: notify_final_rejection()
-        NS->>Customer: notify_customer(application rejected with reasons)
-    end
+    Admin->>Core: Create User (insert into USERS)
+    Core-->>Audit: UserCreatedEvent
+
+    Customer->>Core: Submit Application (insert into APPLICATIONS)
+    Core-->>Notification: ApplicationSubmittedEvent
+    Core-->>Disbursement: ApplicationSubmittedEvent
+
+    Notification-->>Customer: Notify Application Submitted
+    Notification-->>CO: Notify New Application
+    Notification-->>RO: Notify New Application
+
+    CO->>Disbursement: CO Decision (insert into DECISIONS)
+    Disbursement-->>Notification: DecisionEvent
+    Notification-->>Manager: Notify CO Decision
+
+    RO->>Disbursement: RO Decision (insert into DECISIONS)
+    Disbursement-->>Notification: DecisionEvent
+    Notification-->>Manager: Notify RO Decision
+
+    Manager->>Disbursement: Manager Decision (insert into DECISIONS)
+    Disbursement-->>Notification: DecisionEvent
+    Notification-->>Customer: Notify Final Decision

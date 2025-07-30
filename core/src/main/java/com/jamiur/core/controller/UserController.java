@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/core")
+@RequestMapping("/api/v1/core")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
