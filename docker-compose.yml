@@ -41,6 +41,26 @@ services:
     networks:
       - zaprove-network
 
+  prometheus:
+    image: prom/prometheus:v2.37.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - zaprove-network
+
+  grafana:
+    image: grafana/grafana:9.1.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    depends_on:
+      - prometheus
+    networks:
+      - zaprove-network
+
   # frontend:
   #   build: ./frontend
   #   ports:

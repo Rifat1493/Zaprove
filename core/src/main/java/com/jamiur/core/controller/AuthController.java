@@ -29,7 +29,7 @@ public class AuthController {
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
         log.info("Generated JWT Token: {}", jwtToken);
-        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime(), authenticatedUser.getRole());
+        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime(), authenticatedUser.getRole(), authenticatedUser.getUserId());
 
         return ResponseEntity.ok(loginResponse);
     }

@@ -118,7 +118,9 @@ Handles application decisions made by CO, RO, and Manager.
 6. **Manager** gives final verdict → emits `DecisionEvent` → notifies Customer
 7. Application lifecycle ends after Customer receives final decision
 
+#### Monitoring
 
+https://grafana.com/dashboards/11378
 
 
 
@@ -185,8 +187,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - add jwt with other services
 - use compose secrets (https://docs.docker.com/compose/how-tos/use-secrets/)
 - run load testing with benchmark
-- monitor kafka with Grafana
-- prometheus and grafana
+- monitor kafka https://github.com/provectus/kafka-ui
+
 
 
 
