@@ -18,6 +18,14 @@ public class DisbursementController {
     private final DecisionService decisionService;
     private final ApplicationService applicationService;
 
+    @GetMapping("/test-dis")
+    // @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> helloWorld() {
+        return ResponseEntity.ok("Hello from disbursement service!");
+    }
+
+
+
     @PostMapping("/decisions/credit-officer/{applicationId}")
     public ResponseEntity<Void> creditOfficerDecision(@PathVariable Long applicationId, @RequestBody DecisionRequest decisionRequest) {
         decisionService.processCreditOfficerDecision(applicationId, decisionRequest);

@@ -83,9 +83,9 @@ const ActiveApplicationsPage: React.FC = () => {
     const userRole = localStorage.getItem('role');
 
     let roleEndpoint = '';
-    if (userRole === 'CREDIT_OFFICER') {
+    if (userRole === 'CO') {
       roleEndpoint = 'credit-officer';
-    } else if (userRole === 'RISK_OFFICER') {
+    } else if (userRole === 'RO') {
       roleEndpoint = 'risk-officer';
     } else if (userRole === 'MANAGER') {
       roleEndpoint = 'manager';

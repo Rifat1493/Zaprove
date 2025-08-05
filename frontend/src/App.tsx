@@ -51,6 +51,16 @@ const App: React.FC = () => {
         <nav style={{ padding: '1rem', backgroundColor: '#333', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '1.5rem' }}>Zaprove</Link>
           <div>
+            <button onClick={async () => {
+              try {
+                const response = await fetch('http://localhost:8083/api/v1/test-dis');
+                const data = await response.text();
+                alert('Test API Response: ' + data);
+              } catch (error) {
+                console.error('Test API call failed:', error);
+                alert('Test API call failed. Check console for details.');
+              }
+            }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '1rem', marginRight: '1rem' }}>Test</button>
             {userRole === 'ADMIN' && (
               <Link to="/create-user" style={{ color: 'white', textDecoration: 'none', marginRight: '1rem' }}>Create User</Link>
             )}
