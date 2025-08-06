@@ -72,17 +72,17 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#f0f2f5' }}>
-      <div style={{ padding: '40px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', backgroundColor: '#ffffff', width: '350px', textAlign: 'center' }}>
-        <h2 style={{ marginBottom: '30px', color: '#333' }}>Login</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <div className="p-10 rounded-lg shadow-lg bg-white w-96 text-center">
+        <h2 className="mb-8 text-gray-800">Login</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <input
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            style={{ padding: '12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '16px' }}
+            className="p-3 rounded border border-gray-300 text-base"
           />
           <input
             type="password"
@@ -90,27 +90,16 @@ const LoginPage: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ padding: '12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '16px' }}
+            className="p-3 rounded border border-gray-300 text-base"
           />
           <button
             type="submit"
-            style={{
-              padding: '12px 20px',
-              borderRadius: '4px',
-              border: 'none',
-              backgroundColor: '#007bff',
-              color: 'white',
-              fontSize: '16px',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease'
-            }}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#0056b3')}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#007bff')}
+            className="py-3 px-5 rounded border-none bg-teal-600 text-white text-base cursor-pointer transition-colors duration-300 hover:bg-teal-700"
           >
             Login
           </button>
         </form>
-        {message && <p style={{ marginTop: '20px', color: message.includes('failed') || message.includes('error') ? '#dc3545' : '#28a745' }}>{message}</p>}
+        {message && <p className={`mt-5 ${message.includes('failed') || message.includes('error') ? 'text-red-500' : 'text-green-500'}`}>{message}</p>}
       </div>
     </div>
   );

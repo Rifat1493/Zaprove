@@ -92,7 +92,7 @@ const ActiveApplicationsPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${DECISIONS_URL}/${roleEndpoint}/${selectedApplication.id}`, {
+      const response = await fetch(`${DECISIONS_URL}/${roleEndpoint}/${selectedApplication.applicationId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,28 +118,28 @@ const ActiveApplicationsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2 style={{ marginBottom: '20px' }}>Active Loan Applications</h2>
+    <div className="p-5">
+      <h2 className="mb-5">Active Loan Applications</h2>
       {message && <p>{message}</p>}
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Application ID</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Amount</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Purpose</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Status</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Action</th>
+            <th className="border border-gray-300 p-2 text-left">Application ID</th>
+            <th className="border border-gray-300 p-2 text-left">Amount</th>
+            <th className="border border-gray-300 p-2 text-left">Purpose</th>
+            <th className="border border-gray-300 p-2 text-left">Status</th>
+            <th className="border border-gray-300 p-2 text-left">Action</th>
           </tr>
         </thead>
         <tbody>
           {applications.map((app) => (
-            <tr key={app.id}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{app.id}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{app.amount}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{app.purpose}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{app.status}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                <button onClick={() => handleOpenVerdictModal(app)}>Submit Verdict</button>
+            <tr key={app.applicationId}>
+              <td className="border border-gray-300 p-2">{app.applicationId}</td>
+              <td className="border border-gray-300 p-2">{app.amount}</td>
+              <td className="border border-gray-300 p-2">{app.description}</td>
+              <td className="border border-gray-300 p-2">{app.status}</td>
+              <td className="border border-gray-300 p-2">
+                <button className="bg-teal-600 text-white border-none py-2 px-3 rounded cursor-pointer" onClick={() => handleOpenVerdictModal(app)}>Submit Verdict</button>
               </td>
             </tr>
           ))}
@@ -147,24 +147,24 @@ const ActiveApplicationsPage: React.FC = () => {
       </table>
 
       {selectedApplication && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', width: '400px' }}>
-            <h3>Submit Verdict for Application #{selectedApplication.id}</h3>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-5 rounded-lg w-96">
+            <h3>Submit Verdict for Application #{selectedApplication.applicationId}</h3>
             <form onSubmit={handleVerdictSubmit}>
-              <div style={{ marginBottom: '10px' }}>
+              <div className="mb-3">
                 <label htmlFor="decision">Decision:</label>
                 <select
                   id="decision"
                   value={decision}
                   onChange={(e) => setDecision(e.target.value)}
                   required
-                  style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="w-full p-2 rounded border border-gray-300"
                 >
                   <option value="APPROVED">Approve</option>
                   <option value="REJECTED">Reject</option>
                 </select>
               </div>
-              <div style={{ marginBottom: '10px' }}>
+              <div className="mb-3">
                 <label htmlFor="comments">Comments:</label>
                 <textarea
                   id="comments"
@@ -172,15 +172,15 @@ const ActiveApplicationsPage: React.FC = () => {
                   onChange={(e) => setComments(e.target.value)}
                   placeholder="Enter your comments..."
                   required
-                  style={{ width: '100%', minHeight: '100px', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="w-full min-h-24 p-2.5 rounded border border-gray-300"
                 />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <button type="button" onClick={handleCloseVerdictModal}>Cancel</button>
-                <button type="submit">Submit</button>
+              <div className="flex justify-end gap-3">
+                <button type="button" onClick={handleCloseVerdictModal} className="bg-red-500 text-white border-none py-2 px-3 rounded cursor-pointer">Cancel</button>
+                <button type="submit" className="bg-teal-600 text-white border-none py-2 px-3 rounded cursor-pointer">Submit</button>
               </div>
             </form>
-            {verdictMessage && <p style={{ marginTop: '10px' }}>{verdictMessage}</p>}
+            {verdictMessage && <p className="mt-3">{verdictMessage}</p>}
           </div>
         </div>
       )}

@@ -48,15 +48,15 @@ const NotificationsPage: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2 style={{ marginBottom: '20px' }}>Notifications</h2>
+    <div className="p-5">
+      <h2 className="mb-5">Notifications</h2>
       {message && <p>{message}</p>}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <div className="flex flex-col gap-4">
         {notifications.map((notification) => (
-          <div key={notification.id} style={{ padding: '15px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', backgroundColor: '#ffffff' }}>
-            <p style={{ margin: 0, fontWeight: 'bold' }}>{notification.message}</p>
-            <p style={{ margin: '5px 0 0', fontSize: '14px', color: '#555' }}>Status: {notification.status}</p>
-            <p style={{ margin: '5px 0 0', fontSize: '12px', color: '#888' }}>{new Date(notification.createdAt).toLocaleString()}</p>
+          <div key={notification.id} className="p-4 rounded-lg shadow-md bg-white">
+            <p className="m-0 font-bold">{notification.message}</p>
+            <p className="mt-1 text-sm text-gray-600">Status: {notification.status}</p>
+            <p className="mt-1 text-xs text-gray-500">{new Date(notification.createdAt).toLocaleString()}</p>
           </div>
         ))}
       </div>

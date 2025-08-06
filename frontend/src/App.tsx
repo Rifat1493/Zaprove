@@ -48,8 +48,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="App">
-        <nav style={{ padding: '1rem', backgroundColor: '#333', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '1.5rem' }}>Zaprove</Link>
+        <nav className="p-4 bg-teal-600 text-white flex justify-between items-center">
+          <Link to="/" className="text-white no-underline text-2xl">Zaprove</Link>
           <div>
             <button onClick={async () => {
               try {
@@ -60,25 +60,25 @@ const App: React.FC = () => {
                 console.error('Test API call failed:', error);
                 alert('Test API call failed. Check console for details.');
               }
-            }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '1rem', marginRight: '1rem' }}>Test</button>
+            }} className="bg-teal-600 border-none text-white cursor-pointer text-base mr-4">Test</button>
             {userRole === 'ADMIN' && (
-              <Link to="/create-user" style={{ color: 'white', textDecoration: 'none', marginRight: '1rem' }}>Create User</Link>
+              <Link to="/create-user" className="text-white no-underline mr-4">Create User</Link>
             )}
             {userRole === 'CUSTOMER' && (
               <>
-                <Link to="/loan-application" style={{ color: 'white', textDecoration: 'none', marginRight: '1rem' }}>Apply for Loan</Link>
-                <Link to="/notifications" style={{ color: 'white', textDecoration: 'none', marginRight: '1rem' }}>Notifications</Link>
+                <Link to="/loan-application" className="text-white no-underline mr-4">Apply for Loan</Link>
+                <Link to="/notifications" className="text-white no-underline mr-4">Notifications</Link>
               </>
             )}
             {(userRole === 'CREDIT_OFFICER' || userRole === 'RISK_OFFICER' || userRole === 'MANAGER') && (
-              <Link to="/active-applications" style={{ color: 'white', textDecoration: 'none', marginRight: '1rem' }}>Active Applications</Link>
+              <Link to="/active-applications" className="text-white no-underline mr-4">Active Applications</Link>
             )}
             {localStorage.getItem('token') && (
-              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '1rem' }}>Logout</button>
+              <button onClick={handleLogout} className="bg-teal-600 border-none text-white cursor-pointer text-base">Logout</button>
             )}
           </div>
         </nav>
-        <main style={{ padding: '1rem' }}>
+        <main className="p-4">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/create-user" element={userRole === 'ADMIN' ? <CreateUserPage /> : <p>You are not authorized to view this page.</p>} />

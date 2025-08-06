@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { LOAN_APPLICATION_URL } from '../constants/api';
 
 const LoanApplicationPage: React.FC = () => {
+  const [applicationType, setApplicationType] = useState('CAR_LOAN');
   const [amount, setAmount] = useState('');
-  const [purpose, setPurpose] = useState('');
-  const [term, setTerm] = useState('');
+  const [description, setDescription] = useState('');
+  const [applicationData, setApplicationData] = useState('Salaried');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -25,17 +26,19 @@ const LoanApplicationPage: React.FC = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
+          applicationType,
           amount: parseFloat(amount),
-          purpose,
-          term: parseInt(term, 10),
+          description,
+          applicationData,
         }),
       });
 
       if (response.ok) {
         setMessage('Loan application submitted successfully!');
+        setApplicationType('CAR_LOAN');
         setAmount('');
-        setPurpose('');
-        setTerm('');
+        setDescription('');
+        setApplicationData('Salaried');
       } else {
         const errorData = await response.json();
         setMessage(`Loan application failed: ${errorData.message || response.statusText}`);
@@ -46,53 +49,53 @@ const LoanApplicationPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
-      <div style={{ padding: '40px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', backgroundColor: '#ffffff', width: '400px', textAlign: 'center' }}>
-        <h2 style={{ marginBottom: '30px', color: '#333' }}>Loan Application</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="p-10 rounded-lg shadow-lg bg-white w-96 text-center">
+        <h2 className="mb-8 text-gray-800">Loan Application</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <select
+            value={applicationType}
+            onChange={(e) => setApplicationType(e.target.value)}
+            required
+            className="p-3 rounded border border-gray-300 text-base"
+          >
+            <option value="CAR_LOAN">Car Loan</option>
+            <option value="HOME_LOAN">Home Loan</option>
+            <option value="PERSONAL_LOAN">Personal Loan</option>
+          </select>
           <input
             type="number"
             placeholder="Loan Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
-            style={{ padding: '12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '16px' }}
+            className="p-3 rounded border border-gray-300 text-base"
           />
           <input
             type="text"
-            placeholder="Purpose of Loan"
-            value={purpose}
-            onChange={(e) => setPurpose(e.target.value)}
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             required
-            style={{ padding: '12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '16px' }}
+            className="p-3 rounded border border-gray-300 text-base"
           />
-          <input
-            type="number"
-            placeholder="Loan Term (in months)"
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
+          <select
+            value={applicationData}
+            onChange={(e) => setApplicationData(e.target.value)}
             required
-            style={{ padding: '12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '16px' }}
-          />
+            className="p-3 rounded border border-gray-300 text-base"
+          >
+            <option value="Salaried">Salaried</option>
+            <option value="Business">Business</option>
+          </select>
           <button
             type="submit"
-            style={{
-              padding: '12px 20px',
-              borderRadius: '4px',
-              border: 'none',
-              backgroundColor: '#007bff',
-              color: 'white',
-              fontSize: '16px',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease'
-            }}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#0056b3')}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#007bff')}
+            className="py-3 px-5 rounded border-none bg-teal-600 text-white text-base cursor-pointer transition-colors duration-300 hover:bg-teal-700"
           >
             Submit Application
           </button>
         </form>
-        {message && <p style={{ marginTop: '20px', color: message.includes('failed') || message.includes('error') ? '#dc3545' : '#28a745' }}>{message}</p>}
+        {message && <p className={`mt-5 ${message.includes('failed') || message.includes('error') ? 'text-red-500' : 'text-green-500'}`}>{message}</p>}
       </div>
     </div>
   );
