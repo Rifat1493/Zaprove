@@ -1,5 +1,6 @@
 package com.jamiur.core.model.dto;
 
+import com.jamiur.core.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,12 +8,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginResponse {
     private String token;
-
     private long expiresIn;
-
-    public String getToken() {
-        return token;
-    }
+    private User.Role role;
+    private Long userId;
 }
 
 

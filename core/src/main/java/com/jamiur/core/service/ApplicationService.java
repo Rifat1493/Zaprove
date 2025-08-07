@@ -84,4 +84,12 @@ public class ApplicationService {
                 .orElseThrow(() -> new RuntimeException("Application not found"));
         return ApplicationResponse.fromEntity(application);
     }
+
+    @Transactional
+    public void updateApplicationStatus(Long applicationId, String status) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+        application.setStatus(Application.ApplicationStatus.valueOf(status));
+        applicationRepository.save(application);
+    }
 }

@@ -45,6 +45,85 @@ This project is built with a range of modern technologies:
 *   **Containerization**: Docker, Docker Compose
 *   **Build Tool**: Apache Maven
 ### Application Details
+#### 🎭 Roles
+
+| Role         | Description                        |
+|--------------|------------------------------------|
+| Admin        | Creates users                      |
+| Customer     | Submits applications               |
+| Credit Officer (CO) | Reviews applications initially     |
+| Risk Officer (RO)   | Conducts secondary review          |
+| Manager      | Approves or rejects applications   |
+
+---
+
+####  🧩 Services
+
+#####  1. Core Service
+
+Handles user management, authentication, and application submission.
+
+**Endpoints**:
+- `POST /api/v1/core/create-user` — Create user (Admin only)
+- `POST /api/v1/auth/login` — Login
+- `POST /api/v1/auth/logout` — Logout
+- `POST /api/v1/core/loan-application` — Submit application
+
+---
+
+#####  2. Notification Service
+
+Listens to Kafka topics and sends role-specific updates.
+
+**Endpoints**:
+- `GET /api/v1/notifications/customer/{userId}`
+- `GET /api/v1/notifications/credit-officer/{userId}`
+- `GET /api/v1/notifications/risk-officer/{userId}`
+- `GET /api/v1/notifications/manager/{userId}`
+
+---
+
+#####  3. Disbursement Service
+
+Handles application decisions made by CO, RO, and Manager.
+
+**Endpoints**:
+
+- `GET /api/v1/applications/active/credit-officer/{userId}` — View applications assigned to CO
+- `GET /api/v1/applications/active/risk-officer/{userId}` — View applications assigned to RO
+- `GET /api/v1/applications/active/manager/{userId}` — View applications assigned to Manager
+- `POST /api/v1/decisions/credit-officer/{applicationId}`
+- `POST /api/v1/decisions/risk-officer/{applicationId}`
+- `POST /api/v1/decisions/manager/{applicationId}`
+
+---
+
+####  📡 Kafka Events
+
+| Event                        | Topic         | Emitted By     | Consumed By               |
+|-----------------------------|---------------|----------------|----------------------------|
+| `UserCreatedEvent`          | `audit`       | Core           | Audit                      |
+| `ApplicationSubmittedEvent` | `application` | Core           | Notification, Disbursement |
+| `DecisionEvent` (CO/RO/MGR) | `decision`    | Disbursement   | Notification               |
+
+---
+
+####  🔄 Application Workflow
+
+1. **Admin** creates user → emits `UserCreatedEvent`
+2. **Customer** logs in and submits application → emits `ApplicationSubmittedEvent`
+3. **Notification** service informs Customer, CO, and RO of the new application
+4. **Credit Officer (CO)** gives verdict → emits `DecisionEvent` → notifies Manager
+5. **Risk Officer (RO)** gives verdict → emits `DecisionEvent` → notifies Manager
+6. **Manager** gives final verdict → emits `DecisionEvent` → notifies Customer
+7. Application lifecycle ends after Customer receives final decision
+
+#### Monitoring
+
+https://grafana.com/dashboards/11378
+
+
+
 
 ### Getting Started
 
@@ -67,27 +146,9 @@ PGADMIN_DEFAULT_EMAIL=admin@example.com
 PGADMIN_DEFAULT_PASSWORD=admin
 ```
 
-**2. Build the Services**
 
-Each Java-based microservice needs to be packaged into a JAR file before it can be built into a Docker image. The included Maven wrapper (`mvnw`) simplifies this process.
 
-Run the following commands from the project's root directory to build each service:
-
-```bash
-# For Windows
-cd core && mvnw.cmd clean install -DskipTests && cd ..
-cd disbursement-service && mvnw.cmd clean install -DskipTests && cd ..
-cd notification-service && mvnw.cmd clean install -DskipTests && cd ..
-cd eureka-server && mvnw.cmd clean install -DskipTests && cd ..
-
-# For macOS/Linux
-cd core && ./mvnw clean install -DskipTests && cd ..
-cd disbursement-service && ./mvnw clean install -DskipTests && cd ..
-cd notification-service && ./mvnw clean install -DskipTests && cd ..
-cd eureka-server && ./mvnw clean install -DskipTests && cd ..
-```
-
-**3. Launch the Application**
+**2. Launch the Application**
 
 Once the services are built, you can start the entire stack using Docker Compose:
 
@@ -119,12 +180,17 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### To Do List
 - set spring cloud config server
 - set spring cloud gateway
-- use compose secrets (https://docs.docker.com/compose/how-tos/use-secrets/)
-- run load testing with benchmark
-- monitor kafka with Grafana
 - reactive programming and virtual threads
 - integrate keycloak
+- ELK stack
+- deploy in ec2 server with kubernetes
 
+
+
+- add jwt with other services
+- use compose secrets (https://docs.docker.com/compose/how-tos/use-secrets/)
+- run load testing with benchmark
+- monitor kafka https://github.com/provectus/kafka-ui
 
 
 
