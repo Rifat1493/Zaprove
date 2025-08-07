@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ACTIVE_APPLICATIONS_URL, DECISIONS_URL } from '../constants/api';
 
 interface Application {
-  id: number;
+  applicationId: number;
   amount: number;
-  purpose: string;
+  description: string;
   status: string;
 }
 
@@ -106,6 +106,18 @@ const ActiveApplicationsPage: React.FC = () => {
 
       if (response.ok) {
         setVerdictMessage('Verdict submitted successfully!');
+        
+        const status = userRole === 'MANAGER' ? decision : 'UNDER_REVIEW';
+
+        await fetch(`http://localhost:8081/api/v1/core/loan-application/${selectedApplication.applicationId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body:status,
+        });
+
         fetchApplications(); // Refresh the list
         setTimeout(handleCloseVerdictModal, 2000);
       } else {

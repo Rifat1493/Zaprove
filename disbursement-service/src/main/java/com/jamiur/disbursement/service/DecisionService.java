@@ -9,6 +9,7 @@ import com.jamiur.disbursement.repository.DecisionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -21,12 +22,14 @@ public class DecisionService {
     private final ApplicationRepository applicationRepository;
     private final StreamBridge streamBridge;
 
+
     public void processCreditOfficerDecision(Long applicationId, DecisionRequest decisionRequest) {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
         Long creditOfficerId = Objects.requireNonNull(application.getAssignedCoId(), "Assigned Credit Officer not found");
         Long userId = application.getCustomerId();
         saveDecision(applicationId, creditOfficerId, "co_decision", decisionRequest);
+        // updateApplicationStatus(applicationId, "UNDER_REVIEW");
         streamBridge.send("decision-out-0", new DecisionEvent("co_decision", applicationId, decisionRequest.getDecision(),creditOfficerId,userId));
     }
 
@@ -36,6 +39,7 @@ public class DecisionService {
         Long riskOfficerId = Objects.requireNonNull(application.getAssignedRoId(), "Assigned Risk Officer not found");
         Long userId = application.getCustomerId();
         saveDecision(applicationId, riskOfficerId, "ro_decision", decisionRequest);
+        // updateApplicationStatus(applicationId, "UNDER_REVIEW");
         streamBridge.send("decision-out-0", new DecisionEvent("ro_decision", applicationId, decisionRequest.getDecision(),riskOfficerId,userId));
     }
 
@@ -45,6 +49,7 @@ public class DecisionService {
         Long managerId = Objects.requireNonNull(application.getAssignedManagerId(), "Assigned Manager not found");
         Long userId = application.getCustomerId();
         saveDecision(applicationId, managerId, "manager_decision", decisionRequest);
+        // updateApplicationStatus(applicationId, decisionRequest.getDecision());
         streamBridge.send("decision-out-0", new DecisionEvent("manager_decision", applicationId, decisionRequest.getDecision(),managerId,userId));
     }
 
@@ -59,4 +64,13 @@ public class DecisionService {
                 .build();
         decisionRepository.save(decision);
     }
+
+    // private void updateApplicationStatus(Long applicationId, String status) {
+    //     webClientBuilder.build().put()
+    //             .uri("http://core-service:8081/api/v1/core/loan-application/{applicationId}/status", applicationId)
+    //             .bodyValue(status)
+    //             .retrieve()
+    //             .toBodilessEntity()
+    //             .block();
+    // }
 }

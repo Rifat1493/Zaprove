@@ -36,26 +36,24 @@ const LoginPage: React.FC = () => {
         localStorage.setItem('userId', data.userId);
         
         // Conditional routing based on role
+        let path;
         switch (data.role) {
           case 'ADMIN':
-            navigate('/create-user');
+            path = '/create-user';
             break;
           case 'CUSTOMER':
-            navigate('/loan-application');
+            path = '/loan-application';
             break;
           case 'CO':
-            navigate('/active-applications');
-            break;
           case 'RO':
-            navigate('/active-applications');
-            break;
           case 'MANAGER':
-            navigate('/active-applications');
+            path = '/active-applications';
             break;
           default:
-            navigate('/');
+            path = '/';
             break;
         }
+        window.location.href = path;
       } else {
         const errorData = await response.json();
         setMessage(`Login failed: ${errorData.message || response.statusText}`);

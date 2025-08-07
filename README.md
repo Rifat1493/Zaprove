@@ -183,6 +183,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - reactive programming and virtual threads
 - integrate keycloak
 - ELK stack
+- deploy in ec2 server with kubernetes
+
+
 
 - add jwt with other services
 - use compose secrets (https://docs.docker.com/compose/how-tos/use-secrets/)
