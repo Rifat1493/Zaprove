@@ -1,5 +1,5 @@
 package com.jamiur.disbursement.controller;
-
+import com.jamiur.disbursement.dto.ApplicationDTO;
 import com.jamiur.disbursement.dto.DecisionRequest;
 import com.jamiur.disbursement.model.Application;
 import com.jamiur.disbursement.service.ApplicationService;
@@ -55,7 +55,7 @@ public class DisbursementController {
     }
 
     @GetMapping("/applications/active/manager/{userId}")
-    public ResponseEntity<List<Application>> getApplicationsForManager(@PathVariable Long userId) {
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsForManager(@PathVariable Long userId) {
         return ResponseEntity.ok(applicationService.getApplicationsForManager(userId));
     }
 }
