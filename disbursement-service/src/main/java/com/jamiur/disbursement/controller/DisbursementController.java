@@ -6,6 +6,7 @@ import com.jamiur.disbursement.service.ApplicationService;
 import com.jamiur.disbursement.service.DecisionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,9 @@ public class DisbursementController {
     private final DecisionService decisionService;
     private final ApplicationService applicationService;
 
+    
     @GetMapping("/test-dis")
-    // @PreAuthorize("hasAuthority('ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_CO')")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello from disbursement service!");
     }
