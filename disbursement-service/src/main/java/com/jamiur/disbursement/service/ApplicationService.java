@@ -1,5 +1,5 @@
 package com.jamiur.disbursement.service;
-
+import com.jamiur.disbursement.dto.ApplicationDTO;
 import com.jamiur.disbursement.model.Application;
 import com.jamiur.disbursement.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ApplicationService {
         return applicationRepository.findByAssignedRoIdAndStatusIn(userId, List.of(Application.ApplicationStatus.PENDING, Application.ApplicationStatus.UNDER_REVIEW));
     }
 
-    public List<Application> getApplicationsForManager(Long userId) {
+    public List<ApplicationDTO> getApplicationsForManager(Long userId) {
         return applicationRepository.findByAssignedManagerIdAndStatusIn(userId, List.of(Application.ApplicationStatus.PENDING, Application.ApplicationStatus.UNDER_REVIEW));
     }
 }

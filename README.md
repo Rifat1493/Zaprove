@@ -1,17 +1,31 @@
-# Zaprove - Loan Approval Management Microservice
+<h1 align="center">Zaprove - Loan Approval Management Microservice</h1>
+
+[![Java](https://img.shields.io/badge/Java-21-007396.svg?style=flat&logo=java&logoColor=white)](https://www.java.com)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F.svg?style=flat&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat&logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
+![gmail](https://img.shields.io/badge/Contact-jamiur-776AB?logo=gmail&link=mailto%3Ajamiur.rifat%40gmail.com)
+
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#technologies">Technologies</a> •
+  <a href="#application-details">Application Details</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#license">License</a>
+</p>
 
 Zaprove is a robust microservices-based application designed to handle the complexities of loan approval management. It is built with a modern Java stack, featuring a suite of services that work together to provide a scalable and maintainable system. The architecture includes service discovery, centralized configuration, asynchronous messaging, and a full monitoring stack.
-
-**Key Features • Architecture • Technologies • Application Details• Getting Started • Usage • License**
-
----
 
 ### Key Features
 
 *   **Microservice Architecture**: The application is broken down into logical, independently deployable services for better scalability and maintenance.
 *   **Service Discovery**: Utilizes Netflix Eureka for dynamic registration and discovery of services within the ecosystem.
 *   **Asynchronous Messaging**: Employs Apache Kafka for reliable, asynchronous communication between services, ensuring loose coupling and resilience.
-*   **Centralized Logging**: Integrates with an ELK stack (Elasticsearch, Logstash, Kibana) for centralized log aggregation and analysis.
+
 *   **Comprehensive Monitoring**: Features a monitoring solution with Prometheus for metrics collection and Grafana for visualization, including a pre-configured JVM dashboard.
 *   **Relational Data Store**: Uses PostgreSQL for persistent data storage, managed via pgAdmin.
 *   **Containerized Deployment**: The entire application stack is containerized using Docker and orchestrated with Docker Compose for easy setup and deployment.
@@ -24,7 +38,7 @@ The system is composed of several microservices that communicate with each other
 *   **`core-service`**: The central service responsible for core business logic related to loan applications.
 *   **`disbursement-service`**: Manages the disbursement of funds after a loan is approved.
 *   **`notification-service`**: Handles sending notifications (e.g., email, SMS) to users based on events in the system.
-*   **`user-role-service`**: Manages user authentication and role-based access control (RBAC).
+
 
 The following diagrams provide a visual overview of the system architecture:
 
@@ -41,9 +55,9 @@ This project is built with a range of modern technologies:
 *   **Messaging**: Apache Kafka
 *   **Service Discovery**: Netflix Eureka
 *   **Monitoring**: Prometheus, Grafana
-*   **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)
 *   **Containerization**: Docker, Docker Compose
 *   **Build Tool**: Apache Maven
+*   **Frontend**: React, TypeScript, Vite, Tailwindcss
 ### Application Details
 #### 🎭 Roles
 
@@ -119,7 +133,7 @@ Handles application decisions made by CO, RO, and Manager.
 7. Application lifecycle ends after Customer receives final decision
 
 #### Monitoring
-
+You can import this dashboard to see your project.
 https://grafana.com/dashboards/11378
 
 
@@ -131,20 +145,9 @@ To get the full application stack running, you will need **Docker** and **Docker
 
 **1. Environment Configuration**
 
-Before starting, you need to create a `.env` file in the project root directory. This file will hold the necessary credentials for services like PostgreSQL and pgAdmin.
+Before starting, you need to create a `.env` file in the project root directory. This file will hold the necessary credentials for services like PostgreSQL and kafka.
 
-Create a file named `.env` and add the following content:
-
-```env
-# PostgreSQL
-POSTGRES_DB=zaprove_db
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=secret
-
-# pgAdmin
-PGADMIN_DEFAULT_EMAIL=admin@example.com
-PGADMIN_DEFAULT_PASSWORD=admin
-```
+For the simplicity of the project I have used the free services from Aiven (https://aiven.io/)
 
 
 
@@ -162,36 +165,26 @@ This command will build the Docker images for your services and start all the co
 
 After a successful launch, the following services and UIs will be available:
 
+*   **Frontend Application**: `http://localhost:5173`
 *   **Eureka Server**: `http://localhost:8761`
 *   **Core Service**: `http://localhost:8081`
 *   **Notification Service**: `http://localhost:8082`
 *   **Disbursement Service**: `http://localhost:8083`
-*   **pgAdmin**: `http://localhost:5050` (Login with credentials from `.env`)
-*   **Kibana (Logging)**: `http://localhost:5601`
 *   **Prometheus (Metrics)**: `http://localhost:9090`
 *   **Grafana (Dashboard)**: `http://localhost:3000` (Default login: `admin`/`admin`)
 
 The Grafana instance comes pre-configured with a Prometheus data source and a "JVM (Micrometer)" dashboard to monitor the health of your Java services.
+You can also [download the Postman Collection](docs/postman_collection.json) to check each individual endpoint.
 
 ### License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-### To Do List
+### Future Work List
 - set spring cloud config server
 - set spring cloud gateway
 - reactive programming and virtual threads
 - integrate keycloak
 - ELK stack
 - deploy in ec2 server with kubernetes
-
-
-
-- add jwt with other services
-- use compose secrets (https://docs.docker.com/compose/how-tos/use-secrets/)
-- run load testing with benchmark
-- monitor kafka https://github.com/provectus/kafka-ui
-
-
-
-
+- manual kafka configuration with docker and monitor with provectus kafka ui.

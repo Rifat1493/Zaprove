@@ -1,73 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { ACTIVE_APPLICATIONS_URL, DECISIONS_URL } from '../constants/api';
+import React, { useState, useEffect } from "react";
+import { ACTIVE_APPLICATIONS_URL, DECISIONS_URL } from "../constants/api";
 
-interface Application {
+interface ApplicationData {
   applicationId: number;
   amount: number;
   description: string;
   status: string;
 }
 
+interface ManagerApplicationDTO {
+  application: ApplicationData;
+  coDecision: string | null;
+  roDecision: string | null;
+}
+
+type Application = ApplicationData & {
+  coDecision?: string | null;
+  roDecision?: string | null;
+};
+
 const ActiveApplicationsPage: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  const [decision, setDecision] = useState('APPROVED');
-  const [comments, setComments] = useState('');
-  const [verdictMessage, setVerdictMessage] = useState('');
+  const [decision, setDecision] = useState("APPROVED");
+  const [comments, setComments] = useState("");
+  const [verdictMessage, setVerdictMessage] = useState("");
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUserRole(localStorage.getItem("role"));
+    fetchApplications();
+  }, []);
 
   const fetchApplications = async () => {
-    setMessage('Loading active applications...');
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    const userRole = localStorage.getItem('role');
+    setMessage("Loading active applications...");
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    const role = localStorage.getItem("role");
 
-    if (!token || !userId || !userRole) {
-      setMessage('User data not found. Please log in.');
+    if (!token || !userId || !role) {
+      setMessage("User data not found. Please log in.");
       return;
     }
 
-    let roleEndpoint = '';
-    if (userRole === 'CO') {
-      roleEndpoint = 'credit-officer';
-    } else if (userRole === 'RO') {
-      roleEndpoint = 'risk-officer';
-    } else if (userRole === 'MANAGER') {
-      roleEndpoint = 'manager';
-    } else {
-      setMessage('Invalid user role for this page.');
+    let roleEndpoint = "";
+    if (role === "CO") roleEndpoint = "credit-officer";
+    else if (role === "RO") roleEndpoint = "risk-officer";
+    else if (role === "MANAGER") roleEndpoint = "manager";
+    else {
+      setMessage("Invalid user role for this page.");
       return;
     }
 
     try {
       const response = await fetch(`${ACTIVE_APPLICATIONS_URL}/${roleEndpoint}/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setApplications(data);
-        setMessage(data.length === 0 ? 'No active applications found.' : '');
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
         setMessage(`Failed to fetch applications: ${errorData.message || response.statusText}`);
+        return;
       }
+
+      const data = await response.json();
+
+      if (role === "MANAGER") {
+        setApplications(
+          data.map((dto: ManagerApplicationDTO) => ({
+            ...dto.application,
+            coDecision: dto.coDecision,
+            roDecision: dto.roDecision,
+          }))
+        );
+      } else {
+        setApplications(data);
+      }
+
+      setMessage(data.length === 0 ? "No active applications found." : "");
     } catch (error) {
       setMessage(`An error occurred: ${error instanceof Error ? error.message : String(error)}`);
     }
   };
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
   const handleOpenVerdictModal = (application: Application) => {
     setSelectedApplication(application);
-    setDecision('APPROVED');
-    setComments('');
-    setVerdictMessage('');
+    setDecision("APPROVED");
+    setComments("");
+    setVerdictMessage("");
   };
 
   const handleCloseVerdictModal = () => {
@@ -78,52 +99,37 @@ const ActiveApplicationsPage: React.FC = () => {
     event.preventDefault();
     if (!selectedApplication) return;
 
-    setVerdictMessage('Submitting verdict...');
-    const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('role');
+    setVerdictMessage("Submitting verdict...");
+    const token = localStorage.getItem("token");
 
-    let roleEndpoint = '';
-    if (userRole === 'CO') {
-      roleEndpoint = 'credit-officer';
-    } else if (userRole === 'RO') {
-      roleEndpoint = 'risk-officer';
-    } else if (userRole === 'MANAGER') {
-      roleEndpoint = 'manager';
+    let verdictUrl = "";
+    if (userRole === "CO") {
+      verdictUrl = `${DECISIONS_URL}/credit-officer/${selectedApplication.applicationId}`;
+    } else if (userRole === "RO") {
+      verdictUrl = `${DECISIONS_URL}/risk-officer/${selectedApplication.applicationId}`;
+    } else if (userRole === "MANAGER") {
+      verdictUrl = `${DECISIONS_URL}/manager/${selectedApplication.applicationId}`;
     }
 
     try {
-      const response = await fetch(`${DECISIONS_URL}/${roleEndpoint}/${selectedApplication.applicationId}`, {
-        method: 'POST',
+      const response = await fetch(verdictUrl, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          decision,
-          comments,
-        }),
+        body: JSON.stringify({ decision, comments }),
       });
 
-      if (response.ok) {
-        setVerdictMessage('Verdict submitted successfully!');
-        
-        const status = userRole === 'MANAGER' ? decision : 'UNDER_REVIEW';
-
-        await fetch(`http://localhost:8081/api/v1/core/loan-application/${selectedApplication.applicationId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body:status,
-        });
-
-        fetchApplications(); // Refresh the list
-        setTimeout(handleCloseVerdictModal, 2000);
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
-        setVerdictMessage(`Failed to submit verdict: ${errorData.message || response.statusText}`);
+        setVerdictMessage(`Failed: ${errorData.message || response.statusText}`);
+        return;
       }
+
+      setVerdictMessage("Verdict submitted successfully!");
+      fetchApplications();
+      setTimeout(handleCloseVerdictModal, 2000);
     } catch (error) {
       setVerdictMessage(`An error occurred: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -140,6 +146,12 @@ const ActiveApplicationsPage: React.FC = () => {
             <th className="border border-gray-300 p-2 text-left">Amount</th>
             <th className="border border-gray-300 p-2 text-left">Purpose</th>
             <th className="border border-gray-300 p-2 text-left">Status</th>
+            {userRole === "MANAGER" && (
+              <>
+                <th className="border border-gray-300 p-2 text-left">CO Decision</th>
+                <th className="border border-gray-300 p-2 text-left">RO Decision</th>
+              </>
+            )}
             <th className="border border-gray-300 p-2 text-left">Action</th>
           </tr>
         </thead>
@@ -150,8 +162,19 @@ const ActiveApplicationsPage: React.FC = () => {
               <td className="border border-gray-300 p-2">{app.amount}</td>
               <td className="border border-gray-300 p-2">{app.description}</td>
               <td className="border border-gray-300 p-2">{app.status}</td>
+              {userRole === "MANAGER" && (
+                <>
+                  <td className="border border-gray-300 p-2">{app.coDecision || "Pending"}</td>
+                  <td className="border border-gray-300 p-2">{app.roDecision || "Pending"}</td>
+                </>
+              )}
               <td className="border border-gray-300 p-2">
-                <button className="bg-teal-600 text-white border-none py-2 px-3 rounded cursor-pointer" onClick={() => handleOpenVerdictModal(app)}>Submit Verdict</button>
+                <button
+                  className="bg-teal-600 text-white border-none py-2 px-3 rounded cursor-pointer"
+                  onClick={() => handleOpenVerdictModal(app)}
+                >
+                  Submit Verdict
+                </button>
               </td>
             </tr>
           ))}
@@ -188,8 +211,19 @@ const ActiveApplicationsPage: React.FC = () => {
                 />
               </div>
               <div className="flex justify-end gap-3">
-                <button type="button" onClick={handleCloseVerdictModal} className="bg-red-500 text-white border-none py-2 px-3 rounded cursor-pointer">Cancel</button>
-                <button type="submit" className="bg-teal-600 text-white border-none py-2 px-3 rounded cursor-pointer">Submit</button>
+                <button
+                  type="button"
+                  onClick={handleCloseVerdictModal}
+                  className="bg-red-500 text-white border-none py-2 px-3 rounded cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-teal-600 text-white border-none py-2 px-3 rounded cursor-pointer"
+                >
+                  Submit
+                </button>
               </div>
             </form>
             {verdictMessage && <p className="mt-3">{verdictMessage}</p>}

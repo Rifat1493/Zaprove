@@ -12,8 +12,8 @@ public class CoreApplication {
         SpringApplication.run(CoreApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner sendSampleMessage(KafkaStreamProducer producer) {
-        return args -> producer.sendMessage("Hello from Spring Cloud Stream!");
-    }
+    // @Bean
+    // public CommandLineRunner sendSampleMessage(KafkaStreamProducer producer) {
+    //     return args -> producer.sendMessage("Hello from Spring Cloud Stream!");
+    // }
 }

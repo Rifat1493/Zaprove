@@ -1,11 +1,12 @@
 package com.jamiur.disbursement.controller;
-
+import com.jamiur.disbursement.dto.ApplicationDTO;
 import com.jamiur.disbursement.dto.DecisionRequest;
 import com.jamiur.disbursement.model.Application;
 import com.jamiur.disbursement.service.ApplicationService;
 import com.jamiur.disbursement.service.DecisionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,9 @@ public class DisbursementController {
     private final DecisionService decisionService;
     private final ApplicationService applicationService;
 
+    
     @GetMapping("/test-dis")
-    // @PreAuthorize("hasAuthority('ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_CO')")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello from disbursement service!");
     }
@@ -55,7 +57,7 @@ public class DisbursementController {
     }
 
     @GetMapping("/applications/active/manager/{userId}")
-    public ResponseEntity<List<Application>> getApplicationsForManager(@PathVariable Long userId) {
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsForManager(@PathVariable Long userId) {
         return ResponseEntity.ok(applicationService.getApplicationsForManager(userId));
     }
 }
