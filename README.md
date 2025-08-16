@@ -11,7 +11,7 @@ Zaprove is a robust microservices-based application designed to handle the compl
 *   **Microservice Architecture**: The application is broken down into logical, independently deployable services for better scalability and maintenance.
 *   **Service Discovery**: Utilizes Netflix Eureka for dynamic registration and discovery of services within the ecosystem.
 *   **Asynchronous Messaging**: Employs Apache Kafka for reliable, asynchronous communication between services, ensuring loose coupling and resilience.
-*   **Centralized Logging**: Integrates with an ELK stack (Elasticsearch, Logstash, Kibana) for centralized log aggregation and analysis.
+
 *   **Comprehensive Monitoring**: Features a monitoring solution with Prometheus for metrics collection and Grafana for visualization, including a pre-configured JVM dashboard.
 *   **Relational Data Store**: Uses PostgreSQL for persistent data storage, managed via pgAdmin.
 *   **Containerized Deployment**: The entire application stack is containerized using Docker and orchestrated with Docker Compose for easy setup and deployment.
@@ -184,13 +184,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - integrate keycloak
 - ELK stack
 - deploy in ec2 server with kubernetes
+- manual kafka configuration with docker, monitor with provectus kafka ui.
 
 
-
-- add jwt with other services
-- use compose secrets (https://docs.docker.com/compose/how-tos/use-secrets/)
-- run load testing with benchmark
-- monitor kafka https://github.com/provectus/kafka-ui
 
 
 
