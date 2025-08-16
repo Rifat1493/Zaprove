@@ -187,4 +187,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - integrate keycloak
 - ELK stack
 - deploy in ec2 server with kubernetes
-- manual kafka configuration with docker, monitor with provectus kafka ui.
+- manual kafka configuration with docker and monitor with provectus kafka ui.
