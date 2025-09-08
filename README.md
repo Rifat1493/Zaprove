@@ -1,12 +1,32 @@
 <h1 align="center">Zaprove - Loan Approval Management Microservice</h1>
 
-[![Java](https://img.shields.io/badge/Java-21-007396.svg?style=flat&logo=java&logoColor=white)](https://www.java.com)
+<!-- [![Java](https://img.shields.io/badge/Java-21-007396.svg?style=flat&logo=java&logoColor=white)](https://www.java.com)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F.svg?style=flat&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat&logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
-![gmail](https://img.shields.io/badge/Contact-jamiur-776AB?logo=gmail&link=mailto%3Ajamiur.rifat%40gmail.com)
+![gmail](https://img.shields.io/badge/Contact-jamiur-776AB?logo=gmail&link=mailto%3Ajamiur.rifat%40gmail.com) -->
+
+
+<p align="center">
+  <a href="https://www.java.com"><img src="https://img.shields.io/badge/Java-21-007396.svg?style=flat&logo=java&logoColor=white" alt="Java"></a>
+  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-3-6DB33F.svg?style=flat&logo=springboot&logoColor=white" alt="Spring Boot"></a>
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black" alt="React"></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" alt="Docker"></a>
+  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white" alt="PostgreSQL"></a>
+  <a href="https://kafka.apache.org/"><img src="https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat&logo=apachekafka&logoColor=white" alt="Kafka"></a>
+<a href="mailto:jamiur.rifat@gmail.com">
+  <img src="https://img.shields.io/badge/Contact-jamiur-776AB?logo=gmail" alt="gmail">
+</a>
+</p>
+
+
+
+
+
+
+
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
